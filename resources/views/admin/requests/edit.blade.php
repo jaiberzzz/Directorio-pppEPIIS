@@ -41,7 +41,7 @@
 
                         <div>
                             <label for="status" class="block text-sm font-medium text-gray-700">Estado</label>
-                            <select name="status" id="status"
+                            <select name="status" id="status" required
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                 <option value="pendiente" {{ $request->status == 'pendiente' ? 'selected' : '' }}>
                                     Pendiente</option>
@@ -71,4 +71,4 @@
             </div>
         </div>
     </div>
-    </x-admin-layout>
+</x-admin-layout>

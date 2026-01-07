@@ -14,10 +14,13 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
+    <div class="min-h-screen bg-gray-100 flex flex-col">
         @include('layouts.navigation')
 
         <!-- Page Heading -->
@@ -30,9 +33,10 @@
         @endif
 
         <!-- Page Content -->
-        <main>
+        <main class="flex-grow">
             {{ $slot }}
         </main>
+        @include('partials.footer')
     </div>
     @stack('scripts')
 </body>

@@ -75,7 +75,7 @@
                             <div class="col-span-1 md:col-span-2">
                                 <label for="requirements" class="block text-sm font-medium text-gray-700">Requisitos
                                     (separar por puntos o enter)</label>
-                                <textarea name="requirements" id="requirements" rows="3"
+                                <textarea name="requirements" id="requirements" rows="3" required
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400"
                                     placeholder="Ej: Conocimiento de PHP&#10;Proactivo&#10;Estudiante de 8vo ciclo">{{ old('requirements', $convocatoria->requirements) }}</textarea>
                             </div>
@@ -87,21 +87,21 @@
                                     <div>
                                         <label for="contact_name"
                                             class="block text-sm font-medium text-gray-700">Persona de Contacto</label>
-                                        <input type="text" name="contact_name" id="contact_name"
+                                        <input type="text" name="contact_name" id="contact_name" required
                                             value="{{ old('contact_name', $convocatoria->contact_name) }}"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                     </div>
                                     <div>
                                         <label for="contact_email" class="block text-sm font-medium text-gray-700">Email
                                             de Contacto</label>
-                                        <input type="email" name="contact_email" id="contact_email"
+                                        <input type="email" name="contact_email" id="contact_email" required
                                             value="{{ old('contact_email', $convocatoria->contact_email) }}"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                     </div>
                                     <div>
                                         <label for="contact_phone"
                                             class="block text-sm font-medium text-gray-700">Teléfono</label>
-                                        <input type="text" name="contact_phone" id="contact_phone"
+                                        <input type="text" name="contact_phone" id="contact_phone" required
                                             value="{{ old('contact_phone', $convocatoria->contact_phone) }}"
                                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                     </div>

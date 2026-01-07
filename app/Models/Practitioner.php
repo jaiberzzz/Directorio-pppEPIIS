@@ -23,6 +23,8 @@ class Practitioner extends Model
         'hours_completed',
         'photo_path',
         'final_report_path',
+        'report_status',
+        'feedback',
     ];
 
     // Relación: Un practicante pertenece a un usuario

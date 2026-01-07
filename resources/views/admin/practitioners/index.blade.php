@@ -41,7 +41,8 @@
         </div>
     </div>
 
-    <!-- Push Scripts -->
+
+
     @push('scripts')
         <!-- jQuery and DataTables -->
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
@@ -59,14 +60,48 @@
                         { data: 'company_name', name: 'company_name' },
                         { data: 'practice_area', name: 'practice_area' },
                         { data: 'supervisor1_name', name: 'supervisor1_name' },
-                        { data: 'status', name: 'status' },
-                        { data: 'action', name: 'action', orderable: false, searchable: false }
+                        {
+                            data: 'status',
+                            name: 'status',
+                            render: function (data, type, row) {
+                                let statusBadge = data;
+                                if (row.report_status === 'pending') {
+                                    statusBadge += ' <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">Informe Pendiente</span>';
+                                }
+                                return statusBadge;
+                            }
+                        },
+                        {
+                            data: 'action',
+                            name: 'action',
+                            orderable: false,
+                            searchable: false,
+                        }
                     ],
                     language: {
-                        url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+                        "processing": "Procesando...",
+                        "lengthMenu": "Mostrar _MENU_ registros",
+                        "zeroRecords": "No se encontraron resultados",
+                        "emptyTable": "Ningún dato disponible en esta tabla",
+                        "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                        "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                        "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                        "search": "Buscar:",
+                        "infoThousands": ",",
+                        "loadingRecords": "Cargando...",
+                        "paginate": {
+                            "first": "Primero",
+                            "last": "Último",
+                            "next": "Siguiente",
+                            "previous": "Anterior"
+                        },
+                        "aria": {
+                            "sortAscending": ": Activar para ordenar la columna de manera ascendente",
+                            "sortDescending": ": Activar para ordenar la columna de manera descendente"
+                        }
                     }
                 });
             });
         </script>
     @endpush
-    </x-admin-layout>
+</x-admin-layout>

@@ -28,6 +28,7 @@
                             <label for="published_at" class="block text-sm font-medium text-gray-700">Fecha de
                                 Publicación</label>
                             <input type="date" name="published_at" id="published_at" value="{{ date('Y-m-d') }}"
+                                required
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         </div>
 
@@ -43,4 +44,4 @@
             </div>
         </div>
     </div>
-    </x-admin-layout>
+</x-admin-layout>

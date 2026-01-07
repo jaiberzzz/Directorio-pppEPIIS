@@ -30,6 +30,12 @@ class PractitionerController extends Controller
                     $formId = 'delete-form-' . $row->id;
 
                     $btn = '<div class="flex items-center gap-2">';
+
+                    if ($row->report_status === 'pending') {
+                        $reviewUrl = route('admin.practitioners.review-report', $row->id);
+                        $btn .= '<a href="' . $reviewUrl . '" class="bg-yellow-400 hover:bg-yellow-500 text-black px-3 py-1 rounded-md text-sm font-bold shadow-sm transition" title="Revisar Informe" target="_blank"><i class="fas fa-eye mr-1"></i> Revisar</a>';
+                    }
+
                     $btn .= '<a href="' . $editUrl . '" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-sm" title="Editar"><i class="fas fa-edit"></i></a>';
 
                     $btn .= '<form id="' . $formId . '" action="' . $deleteUrl . '" method="POST" style="display:inline;">';
@@ -182,5 +188,50 @@ class PractitionerController extends Controller
         $practitioner->delete();
 
         return redirect()->route('admin.practitioners.index')->with('success', 'Practicante eliminado correctamente.');
+    }
+    /**
+     * Approve the practitioner's report.
+     */
+    public function reviewReport($id)
+    {
+        $practitioner = Practitioner::with('user')->findOrFail($id);
+
+        // Ensure only pending reports or reports with a file can be reviewed
+        if (!$practitioner->final_report_path) {
+            return redirect()->route('admin.practitioners.index')->with('error', 'El practicante no ha subido ningún informe.');
+        }
+
+        return view('admin.practitioners.review-report', compact('practitioner'));
+    }
+
+    public function approveReport($id)
+    {
+        $practitioner = Practitioner::findOrFail($id);
+
+        $practitioner->update([
+            'report_status' => 'approved',
+            'status' => 'finalizado', // Auto-finalize the internship
+        ]);
+
+        return back()->with('success', 'Informe aprobado y prácticas finalizadas.');
+    }
+
+    /**
+     * Reject the practitioner's report with feedback.
+     */
+    public function rejectReport(Request $request, $id)
+    {
+        $practitioner = Practitioner::findOrFail($id);
+
+        $request->validate([
+            'feedback' => 'required|string|max:1000',
+        ]);
+
+        $practitioner->update([
+            'report_status' => 'rejected',
+            'feedback' => $request->feedback,
+        ]);
+
+        return back()->with('success', 'Informe rechazado. Se ha notificado al estudiante.');
     }
 }

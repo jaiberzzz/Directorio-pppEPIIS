@@ -4,7 +4,11 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Practitioner;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\ReportSubmitted;
 use App\Models\Convocatoria;
 
 class PortalController extends Controller
@@ -16,8 +20,9 @@ class PortalController extends Controller
 
         if ($user->hasRole('Estudiante')) {
             $practitioner = $user->practitioner()->with(['supervisor1', 'supervisor2'])->first();
+            $permissionRequests = \App\Models\PermissionRequest::where('practitioner_id', $practitioner->id)->latest()->get();
             $activeConvocatorias = Convocatoria::where('is_active', true)->latest()->take(3)->get();
-            return view('student.dashboard', compact('practitioner', 'activeConvocatorias'));
+            return view('student.dashboard', compact('practitioner', 'activeConvocatorias', 'permissionRequests'));
         }
 
         // Lógica de estadísticas para Admin
@@ -57,9 +62,15 @@ class PortalController extends Controller
 
             $practitioner->update([
                 'final_report_path' => $path,
+                'report_status' => 'pending', // Set to pending on new upload
+                'feedback' => null, // Clear previous feedback
             ]);
 
-            return back()->with('success', 'Informe final subido correctamente.');
+            // Notify Admins and Docentes
+            $recipients = User::role(['Superadmin', 'Docente'])->get();
+            Notification::send($recipients, new ReportSubmitted($practitioner));
+
+            return redirect()->back()->with('success', 'Informe subido correctamente. Espere la revisión.');
         }
 
         return back()->with('error', 'Error al subir el archivo.');

@@ -45,6 +45,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('news', App\Http\Controllers\Admin\NewsController::class);
         Route::resource('documents', App\Http\Controllers\Admin\DocumentController::class);
         Route::resource('requests', App\Http\Controllers\Admin\PermissionRequestController::class);
+
+        // Report Actions
+        Route::get('/practitioners/{practitioner}/review-report', [App\Http\Controllers\Admin\PractitionerController::class, 'reviewReport'])->name('practitioners.review-report');
+        Route::post('/practitioners/{practitioner}/approve-report', [App\Http\Controllers\Admin\PractitionerController::class, 'approveReport'])->name('practitioners.approve-report');
+        Route::post('practitioners/{practitioner}/reject-report', [App\Http\Controllers\Admin\PractitionerController::class, 'rejectReport'])->name('practitioners.reject-report');
+
+        // Notifications
+        Route::get('/notifications/{id}/read', [App\Http\Controllers\Admin\NotificationController::class, 'markAsRead'])->name('notifications.read');
     });
 
     // --- Rutas de Superadministrador ---
@@ -65,6 +73,7 @@ Route::middleware(['auth', 'verified'])->post('/student/request/store', [App\Htt
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

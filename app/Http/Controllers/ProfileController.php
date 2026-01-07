@@ -57,4 +57,36 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+    /**
+     * Update the user's profile photo.
+     */
+    public function updatePhoto(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'photo' => ['required', 'image', 'max:2048'], // Max 2MB
+        ]);
+
+        $user = $request->user();
+        $practitioner = $user->practitioner;
+
+        if (!$practitioner) {
+            return back()->with('status', 'not-practitioner');
+        }
+
+        if ($request->hasFile('photo')) {
+            // Delete old photo if exists
+            if ($practitioner->photo_path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($practitioner->photo_path);
+            }
+
+            // Store new photo
+            $path = $request->file('photo')->store('practitioners_photos', 'public');
+
+            // Update database
+            $practitioner->photo_path = $path;
+            $practitioner->save();
+        }
+
+        return back()->with('status', 'photo-updated');
+    }
 }

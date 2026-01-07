@@ -57,8 +57,8 @@
                             <div>
                                 <label for="phone" class="block text-sm font-medium text-gray-700">Teléfono</label>
                                 <input type="text" name="phone" id="phone"
-                                    value="{{ old('phone', $practitioner->phone) }}" maxlength="9" pattern="\d*"
-                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 9)"
+                                    value="{{ old('phone', $practitioner->phone) }}" required maxlength="9"
+                                    pattern="\d*" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 9)"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                             </div>
 

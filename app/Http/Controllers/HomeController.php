@@ -18,9 +18,10 @@ class HomeController extends Controller
     // Retorna JSON para ser consumido por el frontend
     public function getPractitioners()
     {
-        // Obtener practicantes con su usuario relacionado
+        // Obtener cotodos los practicantes ordenados por el más reciente
         $practitioners = \App\Models\Practitioner::with('user')
-            ->select('practitioners.*');
+            ->select('practitioners.*')
+            ->orderBy('created_at', 'desc');
 
         return \Yajra\DataTables\Facades\DataTables::of($practitioners)
             ->addColumn('full_name', function ($practitioner) {

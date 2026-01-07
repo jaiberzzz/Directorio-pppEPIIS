@@ -36,8 +36,8 @@
             <div class="flex justify-between items-center h-20">
                 <!-- Logo & Title -->
                 <div class="flex items-center gap-4">
-                    <div class="text-3xl opacity-90">
-                        <i class="fas fa-graduation-cap"></i>
+                    <div class="opacity-90">
+                        <img src="{{ asset('images/logo_unamba.png') }}" alt="Logo UNAMBA" class="h-12 w-auto">
                     </div>
                     <div>
                         <h1 class="text-2xl font-bold leading-tight">Directorio de Practicantes</h1>
@@ -79,12 +79,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-[#3070a8] text-white py-8 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-sm text-blue-100 opacity-90">&copy; {{ date('Y') }} Escuela Profesional de Ingeniería
-                Informática y Sistemas. Todos los derechos reservados.</p>
-        </div>
-    </footer>
+    @include('partials.footer')
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
