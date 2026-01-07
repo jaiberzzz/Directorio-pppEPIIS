@@ -24,7 +24,7 @@
                     <li><a href="{{ url('/') }}" class="hover:text-white hover:underline transition">Inicio</a></li>
                     <li><a href="{{ url('/convocatorias') }}"
                             class="hover:text-white hover:underline transition">Convocatorias</a></li>
-                    <li><a href="{{ url('/#contact') }}"
+                    <li><a href="{{ route('contact') }}"
                             class="hover:text-white hover:underline transition">Contacto</a></li>
                     @guest
                         <li><a href="{{ route('login') }}" class="hover:text-white hover:underline transition">Iniciar
@@ -43,11 +43,14 @@
                     </li>
                     <li class="flex items-center gap-3">
                         <i class="fas fa-envelope text-blue-500"></i>
-                        <span>epiis@unamba.edu.pe</span>
+                        <a href="mailto:{{ \App\Models\Setting::get('contact_email', 'epiis@unamba.edu.pe') }}"
+                            class="hover:text-white transition">{{ \App\Models\Setting::get('contact_email',
+                            'epiis@unamba.edu.pe') }}</a>
                     </li>
                     <li class="flex items-center gap-3">
                         <i class="fas fa-phone text-blue-500"></i>
-                        <span>(083) 321-987</span>
+                        <a href="tel:{{ \App\Models\Setting::get('contact_phone_raw', '083321987') }}"
+                            class="hover:text-white transition">{{ \App\Models\Setting::get('contact_phone', '(083) 321-987') }}</a>
                     </li>
                 </ul>
             </div>

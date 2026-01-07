@@ -43,7 +43,7 @@
             <div class="grid md:grid-cols-3 gap-6">
                 <!-- If no news, show placeholder to match layout -->
                 @forelse($news as $item)
-                    <article class="bg-white p-6 rounded shadow-sm border border-gray-200">
+                    <article class="bg-white p-6 rounded shadow-sm border border-gray-200 hover-lift clean">
                         <span
                             class="text-xs text-blue-600 font-bold uppercase mb-2 block">{{ $item->published_at ? $item->published_at->format('d M, Y') : 'Reciente' }}</span>
                         <h4 class="font-bold text-lg text-gray-900 mb-2">{{ $item->title }}</h4>
@@ -68,7 +68,7 @@
             <div class="space-y-4">
                 @forelse($documents as $doc)
                     <div
-                        class="bg-white p-6 rounded shadow-sm border border-gray-200 flex flex-col md:flex-row items-center justify-between gap-4">
+                        class="bg-white p-6 rounded shadow-sm border border-gray-200 flex flex-col md:flex-row items-center justify-between gap-4 hover-lift clean">
                         <div class="flex items-center gap-4">
                             <!-- Icon logic: Simple check for extension or default PDF icon -->
                             @php
@@ -172,8 +172,8 @@
                                     return `<img src="/storage/${data}" alt="Foto" class="w-10 h-10 rounded-full object-cover border border-gray-300">`;
                                 } else {
                                     return `<div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold border border-gray-300">
-                                                                    ${row.full_name ? row.full_name.charAt(0) : '?'}
-                                                                </div>`;
+                                                                            ${row.full_name ? row.full_name.charAt(0) : '?'}
+                                                                        </div>`;
                                 }
                             }
                         },
@@ -203,13 +203,13 @@
 
                                 if (isApproved && hasReport) {
                                     let reportUrl = '/storage/' + row.final_report_path;
-                                    return `<a href="${reportUrl}" target="_blank" class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700 transition inline-flex items-center">
-                                                                        <i class="fas fa-file-pdf mr-1"></i> Ver Informe
-                                                                    </a>`;
+                                    return `<a href="${reportUrl}" target="_blank" class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700 transition inline-flex items-center btn-anim">
+                                                                                <i class="fas fa-file-pdf mr-1"></i> Ver Informe
+                                                                            </a>`;
                                 } else {
-                                    return `<button onclick="alert('Informe no disponible o en proceso')" class="bg-blue-400 text-black px-3 py-1 rounded text-xs inline-flex items-center font-bold">
-                                                                        <i class="fas fa-eye-slash mr-1"></i> En proceso
-                                                                    </button>`;
+                                    return `<button onclick="alert('Informe no disponible o en proceso')" class="bg-blue-400 text-black px-3 py-1 rounded text-xs inline-flex items-center font-bold btn-anim">
+                                                                                <i class="fas fa-eye-slash mr-1"></i> En proceso
+                                                                            </button>`;
                                 }
                             }
                         }

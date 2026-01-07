@@ -20,8 +20,12 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // Datos para el directorio de practicantes (AJAX/API)
 Route::get('/directory-data', [HomeController::class, 'getPractitioners'])->name('directory.data');
 
-// Procesamiento del formulario de contacto
-Route::post('/contact', [HomeController::class, 'storeContact'])->name('contact.store');
+
+
+// Página de contacto y envío de formulario
+use App\Http\Controllers\ContactController;
+Route::get('/contacto', [ContactController::class, 'index'])->name('contact');
+Route::post('/contacto', [ContactController::class, 'send'])->name('contact.send');
 
 use App\Http\Controllers\ConvocatoriaController;
 // Listado público de convocatorias
@@ -60,6 +64,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware(['role:Superadmin'])->prefix('admin')->name('admin.')->group(function () {
         // Gestión de usuarios del sistema
         Route::resource('users', App\Http\Controllers\Admin\UserController::class);
+
+        // Gestión de Configuración (Superadmin)
+        Route::get('/settings', [App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
+        Route::post('/settings', [App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
     });
 });
 

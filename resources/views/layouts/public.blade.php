@@ -25,6 +25,79 @@
         body {
             font-family: 'Roboto', sans-serif;
         }
+
+        /* Global Hover Animation */
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+            /* Indication of interactivity */
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Variants */
+        .hover-lift.email:hover,
+        .hover-lift.location:hover {
+            border-color: #fca5a5;
+            /* red-300 fallback/mix */
+        }
+
+        /* Specific colors suitable for contact cards */
+        .hover-lift.location:hover {
+            border-color: #93c5fd;
+            /* blue-300 */
+            background-color: #eff6ff;
+            /* blue-50 */
+        }
+
+        .hover-lift.email:hover {
+            border-color: #fca5a5;
+            /* red-300 */
+            background-color: #fef2f2;
+            /* red-50 */
+        }
+
+        .hover-lift.whatsapp:hover {
+            border-color: #86efac;
+            /* green-300 */
+            background-color: #f0fdf4;
+            /* green-50 */
+        }
+
+        .hover-lift.phone:hover {
+            border-color: #93c5fd;
+            /* blue-300 */
+            background-color: #eff6ff;
+            /* blue-50 */
+        }
+
+        /* Generic clean lift for news/docs */
+        .hover-lift.clean:hover {
+            border-color: #bfdbfe;
+            /* blue-200 */
+        }
+
+        /* Button Animations */
+        .btn-anim {
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-anim:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            filter: brightness(1.05);
+            /* Slightly brighten on hover */
+        }
+
+        .btn-anim:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
     </style>
 </head>
 
@@ -49,11 +122,11 @@
                 <!-- Desktop Menu -->
                 <nav class="hidden md:flex items-center space-x-6">
                     <a href="{{ url('/') }}"
-                        class="text-blue-50 hover:text-white hover:underline transition text-sm font-medium px-3 py-2 bg-white/10 rounded">Inicio</a>
+                        class="{{ request()->is('/') ? 'bg-white/10 text-white rounded px-3 py-2' : 'text-blue-50 hover:text-white hover:underline' }} transition text-sm font-medium">Inicio</a>
                     <a href="{{ url('/convocatorias') }}"
-                        class="text-blue-50 hover:text-white hover:underline transition text-sm font-medium">Convocatorias</a>
-                    <a href="{{ url('/#contact') }}"
-                        class="text-blue-50 hover:text-white hover:underline transition text-sm font-medium">Contacto</a>
+                        class="{{ request()->routeIs('convocatorias.*') ? 'bg-white/10 text-white rounded px-3 py-2' : 'text-blue-50 hover:text-white hover:underline' }} transition text-sm font-medium">Convocatorias</a>
+                    <a href="{{ route('contact') }}"
+                        class="{{ request()->routeIs('contact') ? 'bg-white/10 text-white rounded px-3 py-2' : 'text-blue-50 hover:text-white hover:underline' }} transition text-sm font-medium">Contacto</a>
 
                     @if (Route::has('login'))
                         @auth

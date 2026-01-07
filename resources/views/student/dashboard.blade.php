@@ -90,7 +90,7 @@
                                         <p class="text-xs text-green-600">Tu informe ha sido revisado y aceptado.</p>
                                     </div>
                                     <a href="{{ Storage::url($practitioner->final_report_path) }}" target="_blank"
-                                        class="bg-white text-green-700 border border-green-300 px-3 py-1 rounded text-sm hover:bg-green-50">
+                                        class="bg-white text-green-700 border border-green-300 px-3 py-1 rounded text-sm hover:bg-green-50 btn-anim">
                                         Ver Informe
                                     </a>
                                 </div>
@@ -187,7 +187,7 @@
 
                             <div class="text-right">
                                 <button type="submit"
-                                    class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition w-full sm:w-auto">
+                                    class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition w-full sm:w-auto btn-anim">
                                     Enviar
                                 </button>
                             </div>

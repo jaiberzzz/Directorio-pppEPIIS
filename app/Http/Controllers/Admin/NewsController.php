@@ -24,12 +24,12 @@ class NewsController extends Controller
                     $formId = 'delete-form-' . $row->id;
 
                     $btn = '<div class="flex items-center gap-2">';
-                    $btn .= '<a href="' . $editUrl . '" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-sm" title="Editar"><i class="fas fa-edit"></i></a>';
+                    $btn .= '<a href="' . $editUrl . '" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-sm btn-anim" title="Editar"><i class="fas fa-edit"></i></a>';
 
                     $btn .= '<form id="' . $formId . '" action="' . $deleteUrl . '" method="POST" style="display:inline;">';
                     $btn .= csrf_field();
                     $btn .= method_field('DELETE');
-                    $btn .= '<button type="button" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-sm delete-btn" data-form-id="' . $formId . '" title="Eliminar"><i class="fas fa-trash"></i></button>';
+                    $btn .= '<button type="button" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-sm delete-btn btn-anim" data-form-id="' . $formId . '" title="Eliminar"><i class="fas fa-trash"></i></button>';
                     $btn .= '</form>';
                     $btn .= '</div>';
                     return $btn;

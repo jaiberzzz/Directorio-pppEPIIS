@@ -27,7 +27,7 @@ class PermissionRequestController extends Controller
                     return '<span class="font-bold ' . ($colors[$row->status] ?? '') . '">' . ucfirst($row->status) . '</span>';
                 })
                 ->addColumn('action', function ($row) {
-                    $btn = '<a href="' . route('admin.requests.edit', $row->id) . '" class="text-blue-600 hover:underline mr-2">Revisar</a>';
+                    $btn = '<a href="' . route('admin.requests.edit', $row->id) . '" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm font-bold shadow-sm transition btn-anim mr-2">Revisar</a>';
                     return $btn;
                 })
                 ->rawColumns(['status', 'action'])

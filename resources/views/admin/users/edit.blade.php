@@ -62,7 +62,7 @@
                             <a href="{{ route('admin.users.index') }}"
                                 class="text-gray-600 hover:underline mr-4">Cancelar</a>
                             <button type="submit"
-                                class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Actualizar
+                                class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 btn-anim">Actualizar
                                 Usuario</button>
                         </div>
                     </form>

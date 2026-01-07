@@ -14,7 +14,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             RoleAndAdminSeeder::class,
-            TestContentSeeder::class,
+                // UserSeeder::class, // Comentado para no duplicar si ya existen
+            SettingSeeder::class,
         ]);
     }
 }

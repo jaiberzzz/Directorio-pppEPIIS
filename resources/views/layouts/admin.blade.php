@@ -53,6 +53,28 @@
             display: flex !important;
             align-items: center !important;
         }
+
+        /* Button Animations */
+        .btn-anim {
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            /* overflow: hidden; Removed to ensure shadows are visible */
+            display: inline-flex; /* Ensure transform works */
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-anim:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            filter: brightness(1.05);
+            z-index: 10; /* Ensure it stays on top */
+        }
+        
+        .btn-anim:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
     </style>
 </head>
 
@@ -132,6 +154,13 @@
                             class="sidebar-link flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                             <i class="fas fa-user-cog w-6"></i>
                             <span class="ml-2">Usuarios</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.settings.index') }}"
+                            class="sidebar-link flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                            <i class="fas fa-cogs w-6"></i>
+                            <span class="ml-2">Configuración</span>
                         </a>
                     </li>
                     @endrole

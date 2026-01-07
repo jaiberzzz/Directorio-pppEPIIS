@@ -17,6 +17,28 @@
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Button Animations */
+        .btn-anim {
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-anim:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            filter: brightness(1.05);
+        }
+
+        .btn-anim:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        /* Auto-apply to common button classes if desired, but explicit class is safer */
+    </style>
 </head>
 
 <body class="font-sans antialiased">

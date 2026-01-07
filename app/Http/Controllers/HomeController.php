@@ -44,18 +44,5 @@ class HomeController extends Controller
             ->make(true);
     }
 
-    // Procesar y enviar formulario de contacto
-    public function storeContact(\Illuminate\Http\Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'message' => 'required|string|max:1000',
-        ]);
 
-        // La lógica para enviar correo iría aquí.
-        // Por ahora, solo retornamos con un mensaje de éxito.
-
-        return redirect()->route('home', ['#contact'])->with('success', '¡Gracias por contactarnos! Tu mensaje ha sido recibido.');
-    }
 }

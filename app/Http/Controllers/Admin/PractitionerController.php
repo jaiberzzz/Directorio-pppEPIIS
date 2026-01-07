@@ -33,15 +33,15 @@ class PractitionerController extends Controller
 
                     if ($row->report_status === 'pending') {
                         $reviewUrl = route('admin.practitioners.review-report', $row->id);
-                        $btn .= '<a href="' . $reviewUrl . '" class="bg-yellow-400 hover:bg-yellow-500 text-black px-3 py-1 rounded-md text-sm font-bold shadow-sm transition" title="Revisar Informe" target="_blank"><i class="fas fa-eye mr-1"></i> Revisar</a>';
+                        $btn .= '<a href="' . $reviewUrl . '" class="bg-yellow-400 hover:bg-yellow-500 text-black px-3 py-1 rounded-md text-sm font-bold shadow-sm transition btn-anim" title="Revisar Informe" target="_blank"><i class="fas fa-eye mr-1"></i> Revisar</a>';
                     }
 
-                    $btn .= '<a href="' . $editUrl . '" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-sm" title="Editar"><i class="fas fa-edit"></i></a>';
+                    $btn .= '<a href="' . $editUrl . '" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-sm btn-anim" title="Editar"><i class="fas fa-edit"></i></a>';
 
                     $btn .= '<form id="' . $formId . '" action="' . $deleteUrl . '" method="POST" style="display:inline;">';
                     $btn .= csrf_field();
                     $btn .= method_field('DELETE');
-                    $btn .= '<button type="button" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-sm delete-btn" data-form-id="' . $formId . '" title="Eliminar"><i class="fas fa-trash"></i></button>';
+                    $btn .= '<button type="button" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-sm delete-btn btn-anim" data-form-id="' . $formId . '" title="Eliminar"><i class="fas fa-trash"></i></button>';
                     $btn .= '</form>';
                     $btn .= '</div>';
 
