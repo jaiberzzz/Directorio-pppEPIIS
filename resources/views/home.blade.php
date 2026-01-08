@@ -99,6 +99,37 @@
 
     </div>
 
+    <!-- Profile Modal -->
+    <div id="profileModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"
+                onclick="closeProfileModal()"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div
+                class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Perfil del
+                                Practicante</h3>
+                            <div class="mt-4 border-t border-gray-100 pt-4" id="modal-content">
+                                <!-- Dynamic Content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button"
+                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                        onclick="closeProfileModal()">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @push('scripts')
         <style>
             /* Custom DataTables Styling */
@@ -159,8 +190,10 @@
             }
         </style>
         <script>
+            let table; // Global reference
+
             $(document).ready(function () {
-                $('#practitioners-table').DataTable({
+                table = $('#practitioners-table').DataTable({
                     processing: true,
                     serverSide: true,
                     ajax: '{{ route("directory.data") }}',
@@ -172,8 +205,8 @@
                                     return `<img src="/storage/${data}" alt="Foto" class="w-10 h-10 rounded-full object-cover border border-gray-300">`;
                                 } else {
                                     return `<div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold border border-gray-300">
-                                                                            ${row.full_name ? row.full_name.charAt(0) : '?'}
-                                                                        </div>`;
+                                                                                        ${row.full_name ? row.full_name.charAt(0) : '?'}
+                                                                                    </div>`;
                                 }
                             }
                         },
@@ -190,40 +223,94 @@
                         {
                             data: 'action', name: 'action', orderable: false, searchable: false,
                             render: function (data, type, row) {
-                                // Check if status is finalized and report path exists
-                                // Note: 'status' field comes from row data. The controller returns 'status' capitalized in 'editColumn', 
-                                // but let's check the raw data or the rendered data if possible. 
-                                // Use row.status which might be 'Finalizado' due to the controller edit.
-                                // Also need to ensure 'final_report_path' is included in the response.
-                                // The controller selects 'practitioners.*', so it should be there.
+                                let buttons = '<div class="flex gap-2">';
 
-                                // Adjust check to be case insensitive just in case or match controller output
+                                // View Profile/Schedule Button
+                                buttons += `<button onclick='openProfileModal(${JSON.stringify(row)})' class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs inline-flex items-center btn-anim" title="Ver Horario y Detalles">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </button>`;
+
+                                // Report Button
                                 let isApproved = (row.report_status === 'approved');
                                 let hasReport = (row.final_report_path && row.final_report_path !== null);
 
                                 if (isApproved && hasReport) {
                                     let reportUrl = '/storage/' + row.final_report_path;
-                                    return `<a href="${reportUrl}" target="_blank" class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700 transition inline-flex items-center btn-anim">
-                                                                                <i class="fas fa-file-pdf mr-1"></i> Ver Informe
-                                                                            </a>`;
-                                } else {
-                                    return `<button onclick="alert('Informe no disponible o en proceso')" class="bg-blue-400 text-black px-3 py-1 rounded text-xs inline-flex items-center font-bold btn-anim">
-                                                                                <i class="fas fa-eye-slash mr-1"></i> En proceso
-                                                                            </button>`;
+                                    buttons += `<a href="${reportUrl}" target="_blank" class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700 transition inline-flex items-center btn-anim" title="Ver Informe">
+                                                    <i class="fas fa-file-pdf"></i>
+                                                </a>`;
                                 }
+
+                                buttons += '</div>';
+                                return buttons;
                             }
                         }
                     ],
                     language: {
                         url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
                     },
-                    // Add 'f' for search and 'l' for length menu
                     dom: '<"flex flex-col md:flex-row justify-between items-center mb-6 gap-4"lf>rt<"flex flex-col md:flex-row justify-between items-center mt-6 gap-4"ip>',
                     initComplete: function () {
                         $('#practitioners-table').addClass('border-collapse w-full');
                     }
                 });
             });
+
+            function openProfileModal(data) {
+                let modal = document.getElementById('profileModal');
+                let content = document.getElementById('modal-content');
+
+                // Format Schedule
+                let scheduleHtml = '';
+                if (data.schedules && data.schedules.length > 0) {
+                    scheduleHtml = '<div class="mt-4"><h4 class="font-bold text-sm text-gray-700 mb-2">Horario de Prácticas</h4><div class="grid grid-cols-2 gap-2 text-sm">';
+                    const days = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+
+                    days.forEach(day => {
+                        let sch = data.schedules.find(s => s.day_of_week === day);
+                        scheduleHtml += `<div class="bg-gray-50 p-2 rounded border border-gray-100 flex justify-between">
+                                    <span class="capitalize font-medium text-gray-600">${day}</span>
+                                    <span class="text-blue-600 font-bold">${sch ? (sch.start_time.substring(0, 5) + ' - ' + sch.end_time.substring(0, 5)) : '-'}</span>
+                                </div>`;
+                    });
+                    scheduleHtml += '</div>';
+
+                    // Add Global Observation if exists
+                    if (data.schedule_observation) {
+                        scheduleHtml += `<div class="mt-3 p-2 bg-yellow-50 border border-yellow-100 rounded text-xs">
+                                <strong class="text-yellow-800 block mb-1">Notas:</strong>
+                                <p class="text-gray-700 italic">${data.schedule_observation}</p>
+                            </div>`;
+                    }
+
+                    scheduleHtml += '</div>';
+                } else {
+                    scheduleHtml = '<p class="text-sm text-gray-500 mt-4 italic">No hay horario registrado.</p>';
+                }
+
+                // Populate Content
+                content.innerHTML = `
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase font-bold">Practicante</p>
+                                        <p class="font-bold text-gray-900 text-lg">${data.full_name}</p>
+                                        <p class="text-sm text-gray-600">${data.student_code}</p>
+                                    </div>
+                                     <div>
+                                        <p class="text-xs text-gray-500 uppercase font-bold">Empresa</p>
+                                        <p class="font-bold text-gray-900 text-lg">${data.company_name}</p>
+                                        <p class="text-sm text-gray-600">${data.practice_area}</p>
+                                    </div>
+                                </div>
+                                ${scheduleHtml}
+                            `;
+
+                modal.classList.remove('hidden');
+            }
+
+            function closeProfileModal() {
+                document.getElementById('profileModal').classList.add('hidden');
+            }
         </script>
     @endpush
 </x-public-layout>

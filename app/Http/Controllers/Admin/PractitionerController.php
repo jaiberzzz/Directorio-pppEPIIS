@@ -38,6 +38,10 @@ class PractitionerController extends Controller
 
                     $btn .= '<a href="' . $editUrl . '" class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-sm btn-anim" title="Editar"><i class="fas fa-edit"></i></a>';
 
+                    // Add View Button
+                    $viewUrl = route('admin.practitioners.show', $row->id);
+                    $btn .= '<a href="' . $viewUrl . '" class="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-sm btn-anim" title="Ver Detalles"><i class="fas fa-eye"></i></a>';
+
                     $btn .= '<form id="' . $formId . '" action="' . $deleteUrl . '" method="POST" style="display:inline;">';
                     $btn .= csrf_field();
                     $btn .= method_field('DELETE');
@@ -127,7 +131,8 @@ class PractitionerController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $practitioner = Practitioner::with(['user', 'supervisor1', 'supervisor2', 'schedules', 'permissionRequests'])->findOrFail($id);
+        return view('admin.practitioners.show', compact('practitioner'));
     }
 
     /**

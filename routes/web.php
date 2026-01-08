@@ -43,6 +43,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // --- Rutas Administrativas ---
     // Accesibles para roles: Superadmin y Docente
     Route::middleware(['role:Superadmin|Docente'])->prefix('admin')->name('admin.')->group(function () {
+        // Dashboard Administrativo (Nuevo)
+        Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+
         // Gestión de practicantes, convocatorias, noticias, documentos y solicitudes
         Route::resource('practitioners', App\Http\Controllers\Admin\PractitionerController::class);
         Route::resource('convocatorias', App\Http\Controllers\Admin\ConvocatoriaController::class);
@@ -76,6 +79,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'verified'])->get('/dashboard', [App\Http\Controllers\Student\PortalController::class, 'index'])->name('dashboard');
 Route::middleware(['auth', 'verified'])->post('/student/report/upload', [App\Http\Controllers\Student\PortalController::class, 'uploadReport'])->name('student.report.upload');
 Route::middleware(['auth', 'verified'])->post('/student/request/store', [App\Http\Controllers\Student\PortalController::class, 'storeRequest'])->name('student.request.store');
+Route::middleware(['auth', 'verified'])->post('/student/schedule/update', [App\Http\Controllers\Student\ScheduleController::class, 'update'])->name('student.schedule.update');
 
 // --- Rutas de Perfil de Usuario ---
 Route::middleware('auth')->group(function () {

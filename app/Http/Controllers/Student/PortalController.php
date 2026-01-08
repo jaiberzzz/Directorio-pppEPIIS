@@ -18,24 +18,20 @@ class PortalController extends Controller
     {
         $user = auth()->user();
 
+        // Redirect Admins and Docentes to their Dashboard
+        if ($user->hasRole(['Superadmin', 'Docente'])) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        // Student Dashboard Logic
         if ($user->hasRole('Estudiante')) {
-            $practitioner = $user->practitioner()->with(['supervisor1', 'supervisor2'])->first();
+            $practitioner = $user->practitioner()->with(['supervisor1', 'supervisor2', 'schedules'])->first();
             $permissionRequests = \App\Models\PermissionRequest::where('practitioner_id', $practitioner->id)->latest()->get();
             $activeConvocatorias = Convocatoria::where('is_active', true)->latest()->take(3)->get();
             return view('student.dashboard', compact('practitioner', 'activeConvocatorias', 'permissionRequests'));
         }
 
-        // Lógica de estadísticas para Admin
-        $stats = [
-            'total_practitioners' => \App\Models\Practitioner::count(),
-            'active_practitioners' => \App\Models\Practitioner::where('status', 'en proceso')->count(),
-            'active_convocatorias' => Convocatoria::where('is_active', true)->count(),
-            'total_documents' => \App\Models\Document::count(),
-        ];
-
-        $recentPractitioners = \App\Models\Practitioner::with('user')->latest()->take(5)->get();
-
-        return view('admin.dashboard', compact('stats', 'recentPractitioners'));
+        return view('dashboard');
     }
 
     // Subir informe final del practicante (PDF)

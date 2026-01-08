@@ -25,6 +25,7 @@ class Practitioner extends Model
         'final_report_path',
         'report_status',
         'feedback',
+        'schedule_observation',
     ];
 
     // Relación: Un practicante pertenece a un usuario
@@ -43,5 +44,17 @@ class Practitioner extends Model
     public function supervisor2()
     {
         return $this->belongsTo(User::class, 'academic_supervisor_2_id');
+    }
+
+    // Relación con horarios
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
+
+    // Relación con solicitudes de permiso
+    public function permissionRequests()
+    {
+        return $this->hasMany(PermissionRequest::class);
     }
 }

@@ -19,7 +19,7 @@ class HomeController extends Controller
     public function getPractitioners()
     {
         // Obtener cotodos los practicantes ordenados por el más reciente
-        $practitioners = \App\Models\Practitioner::with('user')
+        $practitioners = \App\Models\Practitioner::with(['user', 'schedules'])
             ->select('practitioners.*')
             ->orderBy('created_at', 'desc');
 

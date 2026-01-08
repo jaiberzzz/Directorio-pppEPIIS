@@ -147,6 +147,162 @@
                         </form>
                     </div>
 
+                    <!-- Schedule Card -->
+                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold text-gray-900">Mi Horario de Prácticas</h3>
+                            <button type="button" onclick="toggleScheduleMode()" id="toggleModeBtn" class="text-sm text-blue-600 hover:text-blue-800 underline font-medium">Personalizar por día</button>
+                        </div>
+                        <p class="text-sm text-gray-500 mb-4">Define tu jornada laboral. Puedes establecer un horario general o personalizar cada día.</p>
+                        
+                        <form action="{{ route('student.schedule.update') }}" method="POST" id="scheduleForm">
+                            @csrf
+                            
+                            <!-- Mode 1: Quick Set -->
+                            <div id="quickSetMode" class="space-y-4 bg-blue-50 p-4 rounded-md border border-blue-100">
+                                <h4 class="font-bold text-sm text-blue-800 mb-2">Horario General Semanal</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-600 mb-1">Días de Práctica</label>
+                                        <div class="flex gap-2 items-center">
+                                            <select id="startDay" class="w-full text-xs border-gray-300 rounded-md">
+                                                <option value="lunes">Lunes</option>
+                                                <option value="martes">Martes</option>
+                                                <option value="miercoles">Miércoles</option>
+                                                <option value="jueves">Jueves</option>
+                                                <option value="viernes">Viernes</option>
+                                                <option value="sabado">Sábado</option>
+                                                <option value="domingo">Domingo</option>
+                                            </select>
+                                            <span class="text-gray-400 text-xs">a</span>
+                                            <select id="endDay" class="w-full text-xs border-gray-300 rounded-md">
+                                                <option value="lunes">Lunes</option>
+                                                <option value="martes">Martes</option>
+                                                <option value="miercoles">Miércoles</option>
+                                                <option value="jueves">Jueves</option>
+                                                <option value="viernes" selected>Viernes</option>
+                                                <option value="sabado">Sábado</option>
+                                                <option value="domingo">Domingo</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-600 mb-1">Horario</label>
+                                        <div class="flex gap-2 items-center">
+                                            <input type="time" id="generalStartTime" class="w-full text-xs border-gray-300 rounded-md">
+                                            <span class="text-gray-400 text-xs">a</span>
+                                            <input type="time" id="generalEndTime" class="w-full text-xs border-gray-300 rounded-md">
+                                        </div>
+                                    </div>
+                                    <div class="md:col-span-2 hidden">
+                                        <!-- Removed General Note Input from Quick Set in favor of global field below -->
+                                    </div>
+                                </div>
+                                <div class="text-right mt-2">
+                                     <button type="button" onclick="applyQuickSet()" class="text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition">Aplicar a los días seleccionados</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Mode 2: Detailed (Hidden by default) -->
+                            <div id="detailedMode" class="space-y-4 mt-4 hidden">
+                                <h4 class="font-bold text-sm text-gray-700 border-b pb-1 mb-2">Detalle por Día</h4>
+                                @foreach(['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'] as $day)
+                                    @php
+                                        // Filter collection to find the schedule for the current day
+                                        $schedule = $practitioner->schedules->firstWhere('day_of_week', $day);
+                                    @endphp
+                                    <div class="grid grid-cols-12 gap-2 items-center border-b border-gray-50 pb-2 last:border-0 schedule-row" data-day="{{ $day }}">
+                                        <div class="col-span-4 sm:col-span-3 capitalize text-gray-700 font-medium text-sm">{{ $day }}</div>
+                                        <input type="hidden" name="schedules[{{ $day }}][day]" value="{{ $day }}">
+                                        
+                                        <div class="col-span-4">
+                                            <input type="time" name="schedules[{{ $day }}][start_time]" 
+                                                value="{{ $schedule ? \Carbon\Carbon::parse($schedule->start_time)->format('H:i') : '' }}"
+                                                class="w-full text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 day-start">
+                                        </div>
+                                        
+                                        <div class="col-span-4">
+                                            <input type="time" name="schedules[{{ $day }}][end_time]" 
+                                                value="{{ $schedule ? \Carbon\Carbon::parse($schedule->end_time)->format('H:i') : '' }}"
+                                                class="w-full text-xs border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 day-end">
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            
+                            <!-- Global Observation Field -->
+                            <div class="mt-6 border-t pt-4">
+                                <label for="observation" class="block text-sm font-bold text-gray-700 mb-2">Notas / Observaciones del Horario</label>
+                                <textarea name="observation" id="observation" rows="3" 
+                                    class="w-full text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" 
+                                    placeholder="Ej. Hora de almuerzo de 13:00 a 14:00.">{{ $practitioner->schedule_observation }}</textarea>
+                                <p class="text-xs text-gray-500 mt-1">Ingresa aquí detalles generales como tu hora de almuerzo o refrigerio.</p>
+                            </div>
+
+                            <div class="mt-4 text-right">
+                                <button type="submit"
+                                    class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition text-sm btn-anim shadow-md inline-block">
+                                    Guardar Horario Completo
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <script>
+                        function toggleScheduleMode() {
+                            const detailed = document.getElementById('detailedMode');
+                            const btn = document.getElementById('toggleModeBtn');
+                            
+                            if (detailed.classList.contains('hidden')) {
+                                detailed.classList.remove('hidden');
+                                btn.textContent = 'Ocultar detalle';
+                            } else {
+                                detailed.classList.add('hidden');
+                                btn.textContent = 'Personalizar por día';
+                            }
+                        }
+
+                        function applyQuickSet() {
+                            const startDay = document.getElementById('startDay').value;
+                            const endDay = document.getElementById('endDay').value;
+                            const startTime = document.getElementById('generalStartTime').value;
+                            const endTime = document.getElementById('generalEndTime').value;
+
+                            if (!startTime || !endTime) {
+                                alert('Por favor, ingresa una hora de entrada y salida.');
+                                return;
+                            }
+
+                            const days = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+                            const startIndex = days.indexOf(startDay);
+                            const endIndex = days.indexOf(endDay);
+
+                            if (startIndex > endIndex) {
+                                alert('El día de inicio no puede ser posterior al día de fin.');
+                                return;
+                            }
+
+                            // Show detailed view so user sees the change
+                            document.getElementById('detailedMode').classList.remove('hidden');
+                            document.getElementById('toggleModeBtn').textContent = 'Ocultar detalle';
+                            
+                            days.forEach((day, index) => {
+                                // Find inputs for this day
+                                const row = document.querySelector(`.schedule-row[data-day="${day}"]`);
+                                const startInput = row.querySelector('.day-start');
+                                const endInput = row.querySelector('.day-end');
+
+                                if (index >= startIndex && index <= endIndex) {
+                                    startInput.value = startTime;
+                                    endInput.value = endTime;
+                                    // Visual highlight effect
+                                    row.classList.add('bg-blue-50');
+                                    setTimeout(() => row.classList.remove('bg-blue-50'), 1000);
+                                }
+                            });
+                        }
+                    </script>
+
                     <!-- Permission Request Card -->
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                         <h3 class="text-lg font-bold text-gray-900 mb-4">Solicitar Permiso / Vacaciones</h3>
