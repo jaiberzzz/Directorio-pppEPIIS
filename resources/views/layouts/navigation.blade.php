@@ -99,6 +99,28 @@
                 class="text-white border-blue-400 bg-blue-800 focus:bg-blue-800 focus:border-blue-400">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            @role('Superadmin|Docente')
+            <x-responsive-nav-link :href="route('admin.practitioners.index')"
+                :active="request()->routeIs('admin.practitioners.*')"
+                class="text-blue-100 hover:text-white hover:bg-blue-600 focus:bg-blue-600 border-transparent">
+                {{ __('Gestionar Practicantes') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.convocatorias.index')"
+                :active="request()->routeIs('admin.convocatorias.*')"
+                class="text-blue-100 hover:text-white hover:bg-blue-600 focus:bg-blue-600 border-transparent">
+                {{ __('Convocatorias') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.news.index')" :active="request()->routeIs('admin.news.*')"
+                class="text-blue-100 hover:text-white hover:bg-blue-600 focus:bg-blue-600 border-transparent">
+                {{ __('Noticias') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.documents.index')"
+                :active="request()->routeIs('admin.documents.*')"
+                class="text-blue-100 hover:text-white hover:bg-blue-600 focus:bg-blue-600 border-transparent">
+                {{ __('Documentos') }}
+            </x-responsive-nav-link>
+            @endrole
         </div>
 
         <!-- Opciones de Configuración Responsivas -->

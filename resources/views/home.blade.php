@@ -15,7 +15,7 @@
                 <h3 class="text-2xl font-bold text-gray-800">Conoce a Nuestros Practicantes:</h3>
             </div>
 
-            <div class="bg-white rounded shadow border border-gray-200 overflow-hidden">
+            <div class="bg-white rounded shadow border border-gray-200 overflow-x-auto">
                 <table id="practitioners-table" class="w-full text-left border-collapse">
                     <thead class="bg-[#2c3e50] text-white uppercase text-xs font-bold">
                         <tr>
@@ -205,8 +205,8 @@
                                     return `<img src="/storage/${data}" alt="Foto" class="w-10 h-10 rounded-full object-cover border border-gray-300">`;
                                 } else {
                                     return `<div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold border border-gray-300">
-                                                                                        ${row.full_name ? row.full_name.charAt(0) : '?'}
-                                                                                    </div>`;
+                                                                                            ${row.full_name ? row.full_name.charAt(0) : '?'}
+                                                                                        </div>`;
                                 }
                             }
                         },
@@ -227,8 +227,8 @@
 
                                 // View Profile/Schedule Button
                                 buttons += `<button onclick='openProfileModal(${JSON.stringify(row)})' class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-xs inline-flex items-center btn-anim" title="Ver Horario y Detalles">
-                                                <i class="fas fa-calendar-alt"></i>
-                                            </button>`;
+                                                    <i class="fas fa-calendar-alt"></i>
+                                                </button>`;
 
                                 // Report Button
                                 let isApproved = (row.report_status === 'approved');
@@ -237,8 +237,8 @@
                                 if (isApproved && hasReport) {
                                     let reportUrl = '/storage/' + row.final_report_path;
                                     buttons += `<a href="${reportUrl}" target="_blank" class="bg-red-600 text-white px-3 py-1 rounded text-xs hover:bg-red-700 transition inline-flex items-center btn-anim" title="Ver Informe">
-                                                    <i class="fas fa-file-pdf"></i>
-                                                </a>`;
+                                                        <i class="fas fa-file-pdf"></i>
+                                                    </a>`;
                                 }
 
                                 buttons += '</div>';
@@ -269,18 +269,18 @@
                     days.forEach(day => {
                         let sch = data.schedules.find(s => s.day_of_week === day);
                         scheduleHtml += `<div class="bg-gray-50 p-2 rounded border border-gray-100 flex justify-between">
-                                    <span class="capitalize font-medium text-gray-600">${day}</span>
-                                    <span class="text-blue-600 font-bold">${sch ? (sch.start_time.substring(0, 5) + ' - ' + sch.end_time.substring(0, 5)) : '-'}</span>
-                                </div>`;
+                                        <span class="capitalize font-medium text-gray-600">${day}</span>
+                                        <span class="text-blue-600 font-bold">${sch ? (sch.start_time.substring(0, 5) + ' - ' + sch.end_time.substring(0, 5)) : '-'}</span>
+                                    </div>`;
                     });
                     scheduleHtml += '</div>';
 
                     // Add Global Observation if exists
                     if (data.schedule_observation) {
                         scheduleHtml += `<div class="mt-3 p-2 bg-yellow-50 border border-yellow-100 rounded text-xs">
-                                <strong class="text-yellow-800 block mb-1">Notas:</strong>
-                                <p class="text-gray-700 italic">${data.schedule_observation}</p>
-                            </div>`;
+                                    <strong class="text-yellow-800 block mb-1">Notas:</strong>
+                                    <p class="text-gray-700 italic">${data.schedule_observation}</p>
+                                </div>`;
                     }
 
                     scheduleHtml += '</div>';
@@ -290,20 +290,20 @@
 
                 // Populate Content
                 content.innerHTML = `
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                    <div>
-                                        <p class="text-xs text-gray-500 uppercase font-bold">Practicante</p>
-                                        <p class="font-bold text-gray-900 text-lg">${data.full_name}</p>
-                                        <p class="text-sm text-gray-600">${data.student_code}</p>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase font-bold">Practicante</p>
+                                            <p class="font-bold text-gray-900 text-lg">${data.full_name}</p>
+                                            <p class="text-sm text-gray-600">${data.student_code}</p>
+                                        </div>
+                                         <div>
+                                            <p class="text-xs text-gray-500 uppercase font-bold">Empresa</p>
+                                            <p class="font-bold text-gray-900 text-lg">${data.company_name}</p>
+                                            <p class="text-sm text-gray-600">${data.practice_area}</p>
+                                        </div>
                                     </div>
-                                     <div>
-                                        <p class="text-xs text-gray-500 uppercase font-bold">Empresa</p>
-                                        <p class="font-bold text-gray-900 text-lg">${data.company_name}</p>
-                                        <p class="text-sm text-gray-600">${data.practice_area}</p>
-                                    </div>
-                                </div>
-                                ${scheduleHtml}
-                            `;
+                                    ${scheduleHtml}
+                                `;
 
                 modal.classList.remove('hidden');
             }

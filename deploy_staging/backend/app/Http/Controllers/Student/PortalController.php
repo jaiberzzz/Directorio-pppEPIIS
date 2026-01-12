@@ -1,0 +1,102 @@
+<?php
+
+namespace App\Http\Controllers\Student;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Practitioner;
+use Illuminate\Support\Facades\Storage;
+use App\Models\User;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\ReportSubmitted;
+use App\Models\Convocatoria;
+
+class PortalController extends Controller
+{
+    // Dashboard principal: Vista diferente para Estudiante vs Admin
+    public function index()
+    {
+        $user = auth()->user();
+
+        // Redirect Admins and Docentes to their Dashboard
+        if ($user->hasRole(['Superadmin', 'Docente'])) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        // Student Dashboard Logic
+        if ($user->hasRole('Estudiante')) {
+            $practitioner = $user->practitioner()->with(['supervisor1', 'supervisor2', 'schedules'])->first();
+            $permissionRequests = \App\Models\PermissionRequest::where('practitioner_id', $practitioner->id)->latest()->get();
+            $activeConvocatorias = Convocatoria::where('is_active', true)->latest()->take(3)->get();
+            return view('student.dashboard', compact('practitioner', 'activeConvocatorias', 'permissionRequests'));
+        }
+
+        return view('dashboard');
+    }
+
+    // Subir informe final del practicante (PDF)
+    public function uploadReport(Request $request)
+    {
+        $request->validate([
+            'final_report' => 'required|file|mimes:pdf|max:10240', // 10MB PDF
+        ]);
+
+        $user = auth()->user();
+        $practitioner = $user->practitioner;
+
+        if (!$practitioner) {
+            return back()->with('error', 'No tienes un registro de prácticas asociado.');
+        }
+
+        if ($request->hasFile('final_report')) {
+            // Eliminar anterior si existe
+            if ($practitioner->final_report_path) {
+                Storage::disk('public')->delete($practitioner->final_report_path);
+            }
+
+            $path = $request->file('final_report')->store('practitioners/reports', 'public');
+
+            $practitioner->update([
+                'final_report_path' => $path,
+                'report_status' => 'pending', // Set to pending on new upload
+                'feedback' => null, // Clear previous feedback
+            ]);
+
+            // Notify Admins and Docentes
+            $recipients = User::role(['Superadmin', 'Docente'])->get();
+            Notification::send($recipients, new ReportSubmitted($practitioner));
+
+            return redirect()->back()->with('success', 'Informe subido correctamente. Espere la revisión.');
+        }
+
+        return back()->with('error', 'Error al subir el archivo.');
+    }
+
+    // Almacenar solicitud de permiso o justificación
+    public function storeRequest(Request $request)
+    {
+        $request->validate([
+            'type' => 'required|string',
+            'start_date' => 'required|date|after_or_equal:today',
+            'end_date' => 'required|date|after:start_date',
+            'reason' => 'required|string',
+        ]);
+
+        $practitioner = auth()->user()->practitioner;
+
+        if (!$practitioner) {
+            return back()->with('error', 'No tienes un registro de prácticas asociado.');
+        }
+
+        \App\Models\PermissionRequest::create([
+            'practitioner_id' => $practitioner->id,
+            'type' => $request->type,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'reason' => $request->reason,
+            'status' => 'pendiente',
+        ]);
+
+        return back()->with('success', 'Solicitud enviada correctamente.');
+    }
+}

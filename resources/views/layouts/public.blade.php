@@ -115,7 +115,7 @@
                     <div>
                         <h1 class="text-2xl font-bold leading-tight">Directorio de Practicantes</h1>
                         <p class="text-xs text-blue-100 font-light tracking-wide opacity-90">Escuela Profesional de
-                            Ingeniería Informática</p>
+                            Ingeniería Informática y Sistemas</p>
                     </div>
                 </div>
 
